@@ -68,7 +68,17 @@ class FinestraComboBox : JFrame() {
 
     fun agafarComarques() {
         // Instruccions per a posar en el ComboBox el nom de totes les comarques, millor si és per ordre alfabètic
+        var comacaLista = mutableListOf<String>()
+        LogManager.getLogManager().getLogger("").setLevel(Level.SEVERE)
+        val q = sessio.createQuery ("from ComarcaEntity")
 
+        for (c in q.list()) {
+            c as ComarcaEntity
+            comacaLista.add(c.nomC )
+        }
+        comacaLista.sortBy { it }
+        for (i in comacaLista)
+            com.addItem(i)
     }
 
     fun visualitzaCom(comarca: String) {
@@ -80,23 +90,23 @@ class FinestraComboBox : JFrame() {
         // Es pot fer carregant un objecte, o per mig de consulta, però en aquest cas podem tenir problemes amb '
         // Una manera de solucionar el problema de la cometa simple és utilitzar comarca.replaceAll("'","''").
         // Una altra és utilitzar paràmetres
-        LogManager.getLogManager().getLogger("").setLevel(Level.SEVERE)
-        try {
-            val sessio = Configuration().configure().buildSessionFactory().openSession()
-            val com = sessio.load("classes.ComarcaEntity", comarca) as ComarcaEntity
-            area.text=""
-            area.append("Comarca " + com.nomC + ": ")
-            area.append(" (" + com.poblacions.size + " pobles)\n")
-            var pueblos = mutableListOf<String>()
-            for (p in com.poblacions)
-                pueblos.add(p.nom)
-            pueblos.sortBy { it }
-            for (i in pueblos)
-                area.append(" $i\n")
-            sessio.close()
-        }catch (e:MappingException){
-            area.text=("la comarca no existe")
-        }
+//        LogManager.getLogManager().getLogger("").setLevel(Level.SEVERE)
+//        try {
+//            val sessio = Configuration().configure().buildSessionFactory().openSession()
+//            val com = sessio.load("classes.ComarcaEntity", comarca) as ComarcaEntity
+//            area.text=""
+//            area.append("Comarca " + com.nomC + ": ")
+//            area.append(" (" + com.poblacions.size + " pobles)\n")
+//            var pueblos = mutableListOf<String>()
+//            for (p in com.poblacions)
+//                pueblos.add(p.nom)
+//            pueblos.sortBy { it }
+//            for (i in pueblos)
+//                area.append(" $i\n")
+//            sessio.close()
+//        }catch (e:MappingException){
+//            area.text=("la comarca no existe")
+//        }
 
     }
 
