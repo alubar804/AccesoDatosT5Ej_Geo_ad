@@ -90,23 +90,20 @@ class FinestraComboBox : JFrame() {
         // Es pot fer carregant un objecte, o per mig de consulta, però en aquest cas podem tenir problemes amb '
         // Una manera de solucionar el problema de la cometa simple és utilitzar comarca.replaceAll("'","''").
         // Una altra és utilitzar paràmetres
-//        LogManager.getLogManager().getLogger("").setLevel(Level.SEVERE)
-//        try {
-//            val sessio = Configuration().configure().buildSessionFactory().openSession()
-//            val com = sessio.load("classes.ComarcaEntity", comarca) as ComarcaEntity
-//            area.text=""
-//            area.append("Comarca " + com.nomC + ": ")
-//            area.append(" (" + com.poblacions.size + " pobles)\n")
-//            var pueblos = mutableListOf<String>()
-//            for (p in com.poblacions)
-//                pueblos.add(p.nom)
-//            pueblos.sortBy { it }
-//            for (i in pueblos)
-//                area.append(" $i\n")
-//            sessio.close()
-//        }catch (e:MappingException){
-//            area.text=("la comarca no existe")
-//        }
+        LogManager.getLogManager().getLogger("").setLevel(Level.SEVERE)
+        comarca.replace("'","''")
+        try {
+            val d = sessio.createQuery ("from ComarcaEntity where nomC='$comarca'").uniqueResult() as ComarcaEntity
+            val pueblos = mutableListOf<String>()
+            for (p in d.poblacions)
+                pueblos.add(p.nom)
+            pueblos.sortBy { it }
+            for (i in pueblos)
+                listModel.addElement(i)
+            sessio.close()
+        }catch (e:MappingException){
+            listModel.addElement("La comarca no existeix")
+        }
 
     }
 
