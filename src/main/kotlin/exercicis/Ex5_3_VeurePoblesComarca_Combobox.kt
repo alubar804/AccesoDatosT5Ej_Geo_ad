@@ -19,6 +19,7 @@ import javax.swing.JList
 
 import classes.PoblacioEntity
 import classes.ComarcaEntity
+import classes.InstitutEntity
 import org.hibernate.MappingException
 import org.hibernate.cfg.Configuration
 import java.util.logging.Level
@@ -90,6 +91,7 @@ class FinestraComboBox : JFrame() {
         // Es pot fer carregant un objecte, o per mig de consulta, però en aquest cas podem tenir problemes amb '
         // Una manera de solucionar el problema de la cometa simple és utilitzar comarca.replaceAll("'","''").
         // Una altra és utilitzar paràmetres
+        listModel.clear()
         LogManager.getLogManager().getLogger("").setLevel(Level.SEVERE)
         comarca.replace("'","''")
         try {
@@ -100,7 +102,7 @@ class FinestraComboBox : JFrame() {
             pueblos.sortBy { it }
             for (i in pueblos)
                 listModel.addElement(i)
-            sessio.close()
+
         }catch (e:MappingException){
             listModel.addElement("La comarca no existeix")
         }
@@ -112,7 +114,17 @@ class FinestraComboBox : JFrame() {
         // La millor manera és per mig d'una consulta. Podem tenir problemes amb la cometa simple
         // Una manera de solucionar el problema de la cometa simple és utilitzar poble.replaceAll("'","''").
         // Una altra és utilitzar paràmetres
+        poble.replace("'","''")
+        LogManager.getLogManager().getLogger("").setLevel(Level.SEVERE)
+        try {
+            val d = sessio.createQuery ("from PoblacioEntity where nom='$poble'").uniqueResult() as PoblacioEntity
 
+            val numero = d.institut.size
+            peu.setText("$numero")
+
+        }catch (e:MappingException){
+            listModel.addElement("La comarca no existeix")
+        }
     }
 
 }
