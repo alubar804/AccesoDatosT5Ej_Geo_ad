@@ -89,7 +89,7 @@ class FinestraMantenimentComarques : JFrame() {
         pEixir.add(eixir)
 
         llistaComarques = agafarComarques()
-        visComarca()
+        visComarca(0)
 
         primer.addActionListener() { primer() }
         anterior.addActionListener() { anterior() }
@@ -102,51 +102,69 @@ class FinestraMantenimentComarques : JFrame() {
     fun agafarComarques(): ArrayList<ComarcaEntity> {
         var llista = ArrayList<ComarcaEntity>()
         // ací aniran les sentències per a omplir (i retornar) la llista de comarques
-        var comacaLista = mutableListOf<String>()
         LogManager.getLogManager().getLogger("").setLevel(Level.SEVERE)
         val q = sessio.createQuery ("from ComarcaEntity")
         for (c in q.list()) {
             c as ComarcaEntity
-            llista.add(c )
+            llista.add(c)
         }
         return llista
     }
 
-    fun visComarca() {
+    fun visComarca(index:Int) {
         // Mètode per a visualitzar la comarca marcada per l'índex que ve com a paràmetre
-
+        nomComarca.text= llistaComarques[index].nomC
+        nomProvincia.text=llistaComarques[index].provincia
         controlBotons()
     }
 
     fun primer() {
-
-        visComarca()
+        indActual=0
+        visComarca(indActual)
     }
 
     fun anterior() {
-
-        visComarca()
+        indActual--
+        visComarca(indActual)
     }
 
     fun seguent() {
-
-        visComarca()
+        indActual++
+        visComarca(indActual)
     }
 
     fun ultim() {
-
-        visComarca()
+        indActual=llistaComarques.size-1
+        visComarca(indActual)
     }
 
     fun controlBotons() {
         // Mètode per a habilitar/deshabilitar els botons anterior i següent, si s'està en la primera o última comarca
         // No us oblideu d'habilitar-los quan toque
+        val fin = llistaComarques.size-1
+        if (indActual==0){
+            primer.isEnabled=false
+            anterior.isEnabled=false
+            ultim.isEnabled=true
+            seguent.isEnabled=true
+        }else if(indActual==fin){
+            ultim.isEnabled=false
+            seguent.isEnabled=false
+            primer.isEnabled=true
+            anterior.isEnabled=true
+        }else{
+            primer.isEnabled=true
+            anterior.isEnabled=true
+            ultim.isEnabled=true
+            seguent.isEnabled=true
+        }
+
 
     }
 
     fun eixir() {
         //accions per a tancar i per a eixir
-
+        sessio.close()
         exitProcess(0)
     }
 }
